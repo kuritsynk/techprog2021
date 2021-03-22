@@ -85,6 +85,20 @@ public:
 		//std::cout << "Destroying ..." << this << std::endl;
 	}
 
+	Vector& operator=(const Vector& r) {
+
+		if (this == &r) {
+			return *this;
+		}
+
+		setSize(r.size);
+		for (int i = 0; i < size; ++i) {
+			data[i] = r.data[i];
+		}
+
+		return *this;
+	}
+
 };
 
 // void Vector_setSize_Vector*_int(Vector* this, int size) {
@@ -222,6 +236,22 @@ int main() {
 	printVector(v7);
 	printVector(v7);
 
+
+	// Шаг 6
+
+	Vector v8(5);  
+	Vector v9(v8); // конструктор копирования
+	
+	Vector v10 = v8; // конструктор копирования Vector_Vector_Vector*_Vector&(&v10, v8)
+	// создается новый объект-копия
+
+	v9 = v10 = v8; // оператор присваивания // v10.operator=(v8) // Vector_operator=_Vector*_Vector&(&v10, v8)
+	// новый объект не создается, а заполняется существующий
+
+	v10 = v10; // отдельный случай, который надо проверять
+
+	Vector* vptr10 = &v10;
+	v10 = *vptr10; // присвоение самому себе
 
 
 	return 0;

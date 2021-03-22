@@ -53,11 +53,11 @@ public:
 	// Vector_getSize(Vector*_int)
 	void setSize(int size);
 
-	// Vector_setSize(Vector*)
-	int getSize() {
+	// Vector_setSize(const Vector*)
+	int getSize() const {
 		return size;
 	}
-	int* getData() {
+	int* getData() const {
 		return data;
 	}
 
@@ -73,8 +73,16 @@ public:
 		setSize(size);
 	}
 
+	Vector(const Vector& src) : data(nullptr), size(0) {
+		setSize(src.size);
+		for (int i = 0; i < size; ++i) {
+			data[i] = src.data[i];
+		}
+	}
+
 	~Vector() {
 		setSize(0);
+		//std::cout << "Destroying ..." << this << std::endl;
 	}
 
 };
@@ -105,6 +113,15 @@ void Vector::setSize(int size) {
 	data = new int[size];
 	this->size = size;
 }
+
+// Передача параметра по значению
+// v - побитовая копия передаваемого значения (v7 в примере на шаге 5)
+// Vector v(v7): v.size = v7.size, v.data = v7.data
+void printVector(Vector v) {
+	for (int i = 0; i < v.getSize(); ++i) {
+		std::cout << v.getData()[i] << std::endl;
+	}
+} // v.~Vector() -> будет освобождена память по указателю v.data (v7.data)
 
 int multiplyVectors(Vector v1, Vector v2) {
 	return 0;
@@ -190,6 +207,21 @@ int main() {
 	}
 
 	delete[] varray;
+
+	// 5 шаг - Передача объектов в функции
+	
+	std::cout << "=== 5 ===" << std::endl;
+
+
+	Vector v7(5);
+	for (int i = 0; i < v7.getSize(); ++i) {
+		v7.getData()[i] = i;
+	}
+
+
+	printVector(v7);
+	printVector(v7);
+
 
 
 	return 0;

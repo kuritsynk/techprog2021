@@ -5,17 +5,26 @@ using namespace std;
 class A {
 
 public: // для демонстрации адреса поля
+	// vptr -- указатель на таблицу виртуальных функций vtable_A, которая содержит адреса 
+    // vtable_A: 0: "print"-> A_print_A*
+	// всех виртуальных функций в классе
 
 	int a;
 
 public:
-	A(int a) : a(a) {}
+	A(int a) : 
+		// vptr(&vtable_A), 
+		a(a) {
+	
+		cout << "In class A constructor: " << this << endl;
+		print(); // всегда будет вызываться A_print_A*(this)
+	}
 
 	int getA() {
 		return a;
 	}
 
-	void print() {
+	virtual void print() {
 		cout << "a=" << a << endl;
 	}
 
@@ -23,6 +32,20 @@ public:
 
 
 void foo(A* ptr) {
+	// Раннее связывание:
+	// if (A_getA_A*(ptr) > 0) {
+	//    A_print_A*(ptr);
+	// }
+
+
+	// Позднее связывание для print():
+	// if (A_getA_A*(ptr) > 0) {
+	//    ptr->vptr["print"](ptr);  
+	// компилятор подставляет вызов функции по адресу, полученному через указатель vptr
+	// со смещением для метода "print" 
+	// }
+
+
 	if (ptr->getA() > 0) {
 		ptr->print();
 	}
@@ -36,7 +59,10 @@ public: // для демонстрации адреса поля
 
 public:
 
-	B(int a, int b) : A(a), b(b) {}
+	B(int a, int b) : A(a), 
+		// vptr(&vtable_B),   // инициализация указателя на VMT происходит после вызова конструктора базового класса
+		// vtable_B: 0: "print"-> B_print_B*
+		b(b) {}
 
 	int getB() {
 		return b;

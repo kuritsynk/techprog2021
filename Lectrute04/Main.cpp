@@ -55,7 +55,7 @@ void foo(A* ptr) {
 	}
 }
 
-class B : public A {
+class B : virtual public A {
 
 public: // для демонстрации адреса поля
 
@@ -79,7 +79,7 @@ public:
 
 };
 
-class C : public A {
+class C : virtual public A {
 
 public: // для демонстрации адреса поля
 	int c;
@@ -110,7 +110,7 @@ public: // для демонстрации адреса поля
 
 public:
 
-	D(int a, int b, int c, int d) : B(a, b), C(a, c), d(d) {}
+	D(int a, int b, int c, int d) : A(a), B(a, b), C(a, c), d(d) {}
 
 	void print() {
 		B::print();

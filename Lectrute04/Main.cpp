@@ -24,12 +24,15 @@ public:
 		return a;
 	}
 
+	void setA(int a) {
+		this->a = a;
+	}
+
 	virtual void print() {
 		cout << "a=" << a << endl;
 	}
 
 };
-
 
 void foo(A* ptr) {
 	// Раннее связывание:
@@ -76,20 +79,25 @@ public:
 
 };
 
-class C {
+class C : public A {
 
 public: // для демонстрации адреса поля
 	int c;
 
 public:
 
-	C(int c) : c(c) {}
+	C(int a, int c) : A(a), c(c) {}
 
 	int getC() {
 		return c;
 	}
 
 	virtual void write() {
+		C::print();
+	}
+
+	void print() {
+		A::print();
 		cout << "c=" << c << endl;
 	}
 
@@ -102,7 +110,7 @@ public: // для демонстрации адреса поля
 
 public:
 
-	D(int a, int b, int c, int d) : B(a, b), C(c), d(d) {}
+	D(int a, int b, int c, int d) : B(a, b), C(a, c), d(d) {}
 
 	void print() {
 		B::print();
@@ -111,9 +119,21 @@ public:
 	}
 
 	void write() {
-		print();
+		D::print();
 	}
 };
+
+void modifyB(B* ptr, int newA) {
+	ptr->setA(newA);
+}
+
+void showB(B* ptr) {
+	ptr->A::print();
+}
+
+void showC(C* ptr) {
+	ptr->A::print();
+}
 
 int main() {
 
@@ -156,14 +176,18 @@ int main() {
 	cout << "sizeOf(D)=" << sizeof(D) << endl;
 	D dObj(1, 2, 3, 4);
 	cout << "&dObj=" << &dObj << endl;
-	cout << "&dObj.a=" << &dObj.a << endl;
+	cout << "&dObj.B::a=" << &dObj.B::a << endl;
 	cout << "&dObj.b=" << &dObj.b << endl;
+	cout << "&dObj.C::a=" << &dObj.C::a << endl;
 	cout << "&dObj.c=" << &dObj.c << endl;
 	cout << "&dObj.d=" << &dObj.d << endl;
-	// D : { B : { A : { vprt, a} , b },  C : { vpt, c }, d }
-	dObj.print();
-	
+	// D : { B : { A : { vprt, a} , b },  C : { A : { vprt, a}, c }, d }
 
+	modifyB(&dObj, 6);
+	dObj.print();
+
+	showB(&dObj);
+	showC(&dObj);
 
 	return 0;
 }

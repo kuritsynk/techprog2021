@@ -2,6 +2,8 @@
 
 using namespace std;
 
+
+
 class A {
 
 public: // дл€ демонстрации адреса пол€
@@ -135,6 +137,37 @@ void showC(C* ptr) {
 	ptr->A::print();
 }
 
+// абстрактный класс (нельз€ создать его экземпл€р)
+class Printable {
+public:
+	// чиста€ виртуальна€ функци€
+	virtual int getValue() = 0;
+
+	// чиста€ виртуальна€ функци€
+	virtual void print() = 0;
+};
+
+class F : public Printable {
+	int f;
+
+public:
+	F(int f) : f(f) {}
+
+	int getValue() {
+		return f;
+	}
+
+	void print() {
+		cout << "f=" << f << endl;
+	}
+};
+
+void fooPrint(Printable* ptr) {
+	if (ptr->getValue() > 0) {
+		ptr->print();
+	}
+}
+
 int main() {
 
 	cout << endl << "A" << endl;
@@ -188,6 +221,15 @@ int main() {
 
 	showB(&dObj);
 	showC(&dObj);
+
+	cout << endl << endl << "Abstract classes" << endl;
+
+	// Printable pr; // нельз€ объ€вить экземпл€р абстрактного класса
+
+	// F f(2); // f - абстрактный, до тех пор, пока не определены все чистые виртуальные функции
+
+	F f(2);
+	fooPrint(&f);
 
 	return 0;
 }

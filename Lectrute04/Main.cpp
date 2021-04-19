@@ -24,7 +24,7 @@ public:
 		return a;
 	}
 
-	virtual void print() {
+	void print() {
 		cout << "a=" << a << endl;
 	}
 
@@ -45,6 +45,7 @@ void foo(A* ptr) {
 	// со смещением для метода "print" 
 	// }
 
+	cout << "In foo(" << ptr << "): " << endl;
 
 	if (ptr->getA() > 0) {
 		ptr->print();
@@ -68,7 +69,7 @@ public:
 		return b;
 	}
 
-	void print() {
+	virtual void print() {
 		A::print();
 		cout << "b=" << b << endl;
 	}
@@ -100,8 +101,17 @@ int main() {
 	cout << "&bObj.a=" << &bObj.a << endl;
 	cout << "&bObj.b=" << &bObj.b << endl;
 	A* pa = &bObj;
-	cout << "(A*)&bObj=" << pa << endl;
+	cout << "(A*)&bObj=" << pa << "; &bObj" << &bObj << endl;
 
+	// В случае, если класс A содержит виртуальные методы, то А - полиморфный класс
+	// Структура объекта класса B:
+	// B : { A : { vprt, a} , b }
+	// В этом случае (A*) &bObj == (B*) &bObj
+
+	// В случае, если в классе A нет виртуальных методов (А - неполиморфный класс), 
+	// а в классе B - есть виртуальные методы, то структура объекта класса B:
+	// B : { vptr, A: { a }, b }
+	// В этом случае (A*) &bObj != (B*) &bObj
 
 	return 0;
 }

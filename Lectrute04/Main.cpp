@@ -24,7 +24,7 @@ public:
 		return a;
 	}
 
-	void print() {
+	virtual void print() {
 		cout << "a=" << a << endl;
 	}
 
@@ -69,13 +69,51 @@ public:
 		return b;
 	}
 
-	virtual void print() {
+	void print() {
 		A::print();
 		cout << "b=" << b << endl;
 	}
 
 };
 
+class C {
+
+public: // для демонстрации адреса поля
+	int c;
+
+public:
+
+	C(int c) : c(c) {}
+
+	int getC() {
+		return c;
+	}
+
+	virtual void write() {
+		cout << "c=" << c << endl;
+	}
+
+};
+
+class D : public B, public C {
+
+public: // для демонстрации адреса поля
+	int d;
+
+public:
+
+	D(int a, int b, int c, int d) : B(a, b), C(c), d(d) {}
+
+	void print() {
+		B::print();
+		C::write();
+		cout << "d=" << d << endl;
+	}
+
+	void write() {
+		print();
+	}
+};
 
 int main() {
 
@@ -112,6 +150,20 @@ int main() {
 	// а в классе B - есть виртуальные методы, то структура объекта класса B:
 	// B : { vptr, A: { a }, b }
 	// В этом случае (A*) &bObj != (B*) &bObj
+
+	cout << endl << endl << "D" << endl;
+
+	cout << "sizeOf(D)=" << sizeof(D) << endl;
+	D dObj(1, 2, 3, 4);
+	cout << "&dObj=" << &dObj << endl;
+	cout << "&dObj.a=" << &dObj.a << endl;
+	cout << "&dObj.b=" << &dObj.b << endl;
+	cout << "&dObj.c=" << &dObj.c << endl;
+	cout << "&dObj.d=" << &dObj.d << endl;
+	// D : { B : { A : { vprt, a} , b },  C : { vpt, c }, d }
+	dObj.print();
+	
+
 
 	return 0;
 }
